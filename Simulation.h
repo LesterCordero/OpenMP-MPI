@@ -1,7 +1,8 @@
 #pragma once
 #include<iostream>
 #include<vector>
-#include<thread>
+#include<queue>
+#include<string>
 #include"Person.h"
 using namespace std;
 
@@ -19,16 +20,23 @@ public:
 	float recover_chance_pertick;
 	float death_chance_pertick;
 
-	int simulation_tick_counter;
 	int simulation_tick_limit;
 
-	vector<Person> people;
-	int** used_cells;
+	int core_num;
 
-	void start(int, int, float, float, float, int);
+	vector<Person> people;
+	deque<string> coutQueue;
+
+	int** people_num_infected;
+	int** people_num_recovered;
+
+	void start(int, int, float, float, float, int, int);
 	void run(int);
+
+	void pushMsgQueue(string);
+	void popMsgQueue(bool, int);
 private:
-	void makePeople();
+	void makePeople(); 
 	void makeRoom();
 	void cleanMemory();
 };
