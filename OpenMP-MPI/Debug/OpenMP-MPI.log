@@ -1,5 +1,5 @@
-﻿  Main.cpp
-  Persona.cpp
-  Simulador.cpp
-  Generating Code...
+﻿  Simulation.cpp
+c1xx : warning C4199: two-phase name lookup is not supported for C++/CLI, C++/CX, or OpenMP; use /Zc:twoPhase-
+c:\users\gabriel\source\repos\openmp-mpi\simulation.cpp(38): warning C4018: '<': signed/unsigned mismatch
+c:\users\gabriel\source\repos\openmp-mpi\simulation.cpp(39): warning C4018: '<': signed/unsigned mismatch
   OpenMP-MPI.vcxproj -> C:\Users\Gabriel\source\repos\OpenMP-MPI\Debug\OpenMP-MPI.exe

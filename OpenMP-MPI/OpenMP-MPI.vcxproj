@@ -117,12 +117,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Main.cpp" />
-    <ClCompile Include="..\Persona.cpp" />
-    <ClCompile Include="..\Simulador.cpp" />
+    <ClCompile Include="..\Person.cpp" />
+    <ClCompile Include="..\Simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Persona.h" />
-    <ClInclude Include="..\Simulador.h" />
+    <ClInclude Include="..\Person.h" />
+    <ClInclude Include="..\Simulation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,18 +18,18 @@
     <ClCompile Include="..\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Persona.cpp">
+    <ClCompile Include="..\Simulation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Simulador.cpp">
+    <ClCompile Include="..\Person.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Persona.h">
+    <ClInclude Include="..\Simulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Simulador.h">
+    <ClInclude Include="..\Person.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

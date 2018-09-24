@@ -1,18 +1,15 @@
-#include <vector>
 #include <iostream>
-#include <string>
-#include <chrono> 
-#include <omp.h> 
-#include "Persona.h"
-#include "Simulador.h"
+#include <chrono>
+#include "Person.h"
+#include "Simulation.h"
 using namespace std;
 using namespace std::chrono;
 
 int main() {
 
-	cout << "Simulacion ejecutandose desde github" << endl;
-
-	Simulador sim(50, 500, 0.5f, 0.25f, 0.33f, 100);
+	Simulation sim;
+	sim.start(50, 500, 0.3f, 0.45f, 0.25f, 100);
+	sim.run(50);
 	
 	cin.ignore();
 }
