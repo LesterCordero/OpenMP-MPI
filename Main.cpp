@@ -28,15 +28,21 @@ int main() {
 
 	srand(time(NULL));
 
+
+	// Construya la simulación
 	Simulation sim;
-	sim.start(5, 500, 0.3f, 0.45f, 0.25f, 100, cores);
+	sim.start(40, 500, .20f, 0.10f, 0.15f, 0.25f, 100, cores);
 
+	// Tome el tiempo y ejecute la simulación
 	tiempo_inicio();
-	sim.run(25);
+	sim.run(10);
 	tiempo_final();
-	sim.popMsgQueue(true, -1);
 
+	// Limpie la memoria e imprima al archivo
+	sim.cleanMemory();
+	sim.popMsgQueue(true, -1);
 	cout << "Tardo " << tiempo << " segundos aproximadamente." << endl;
 
+	// Fin del programa
 	cin.ignore();
 }

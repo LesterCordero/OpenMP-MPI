@@ -6,11 +6,29 @@ Person::Person(int id) {
 	local_y = rand() % 10 + 1;
 }
 
-void Person::updateMe() {
+void Person::updateMe(int** people_num_infected, int** people_num_recovered) {
+
+	if (state_current == state_healthy) {
+	
+		if (people_num_infected[local_x][local_y] > 0) {
+			for (int n = 0; n < people_num_infected[local_x][local_y]; n++) {
+				if (rand() % 100 >  Simulation::infect_chance_pertick) {
+
+					state_current = state_infected;
+					people_num_infected[local_x][local_y] += 1;
+					Simulation::stats_infected++;
+				
+				}
+			}
+		}
+
+	}
+
+	
 
 }
 
-void Person::doMovement() {
+void Person::doMovement(int** people_num_infected, int** people_num_recovered) {
 	
 	int xdir = 1;
 	int ydir = 1;
@@ -23,11 +41,15 @@ void Person::doMovement() {
 		ydir = -1;
 	}
 
-	local_x += xdir;
-	local_y += ydir;
-}
-
-void Person::doMatrix() {
+	if (state_current == state_infected) {
+		people_num_infected[local_x][local_y] -= 1;
+		local_x += xdir;
+		local_y += ydir;
+		people_num_infected[local_x][local_y] += 1;
+	}else {
+		local_x += xdir;
+		local_y += ydir;
+	}
 
 }
 

@@ -21,7 +21,6 @@ public:
 	int getY();
 
 	Person(int);
-	void updateMe();
-	void doMovement();
-	void doMatrix();
+	void updateMe(int** , int**);
+	void doMovement(int** , int**);
 };
