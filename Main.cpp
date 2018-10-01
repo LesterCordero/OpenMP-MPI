@@ -2,16 +2,13 @@
 #include <chrono>
 #include "Person.h"
 #include "Simulation.h"
-#include<omp.h>
-
-int cores = omp_get_num_procs();
-
+#include <omp.h>
 using namespace std;
 using namespace std::chrono;
+
 steady_clock::time_point inicio;
 steady_clock::time_point fin;
 string tiempo;
-
 
 void tiempo_inicio() {
 	inicio = steady_clock::now();
@@ -23,19 +20,19 @@ void tiempo_final() {
 	tiempo = to_string(duracion.count());
 }
 
-
 int main() {
 
+	// Genera una semilla para los números random
 	srand(time(NULL));
-
 
 	// Construya la simulación
 	Simulation sim;
-	sim.start(40, 500, .20f, 0.10f, 0.15f, 0.25f, 100, cores);
+
+	sim.start(omp_get_num_procs(), 50, 1500, .10f, 0.10f, .01f, .20f);
 
 	// Tome el tiempo y ejecute la simulación
 	tiempo_inicio();
-	sim.run(10);
+	sim.run(40);
 	tiempo_final();
 
 	// Limpie la memoria e imprima al archivo

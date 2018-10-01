@@ -1,56 +1,11 @@
 #include"Person.h"
 #include"Simulation.h"
-Person::Person(int id) {
+
+Person::Person(int id, int roomsize) {
+	state_current = 0;
 	debug_id = id;
-	local_x = rand() % 10 + 1;
-	local_y = rand() % 10 + 1;
-}
-
-void Person::updateMe(int** people_num_infected, int** people_num_recovered) {
-
-	if (state_current == state_healthy) {
-	
-		if (people_num_infected[local_x][local_y] > 0) {
-			for (int n = 0; n < people_num_infected[local_x][local_y]; n++) {
-				if (rand() % 100 >  Simulation::infect_chance_pertick) {
-
-					state_current = state_infected;
-					people_num_infected[local_x][local_y] += 1;
-					Simulation::stats_infected++;
-				
-				}
-			}
-		}
-
-	}
-
-	
-
-}
-
-void Person::doMovement(int** people_num_infected, int** people_num_recovered) {
-	
-	int xdir = 1;
-	int ydir = 1;
-
-	if ((rand() % 100) > 50) {
-		xdir = -1;
-	}
-
-	if ((rand() % 100) > 50) {
-		ydir = -1;
-	}
-
-	if (state_current == state_infected) {
-		people_num_infected[local_x][local_y] -= 1;
-		local_x += xdir;
-		local_y += ydir;
-		people_num_infected[local_x][local_y] += 1;
-	}else {
-		local_x += xdir;
-		local_y += ydir;
-	}
-
+	local_x = rand() % roomsize;
+	local_y = rand() % roomsize;
 }
 
 int Person::getX() {
@@ -59,4 +14,37 @@ int Person::getX() {
 
 int Person::getY() {
 	return local_y;
+}
+
+int Person::getDebugID() {
+	return debug_id;
+}
+
+int Person::getState() {
+	return state_current;
+}
+
+void Person::setState(int state) {
+	state_current = state;
+}
+
+void Person::setLocation(int x, int y, int roomsize) {
+	if (x > roomsize - 1) {
+		x = roomsize - 1 ;
+	}
+
+	if (y > roomsize - 1) {
+		y = roomsize - 1;
+	}
+
+	if (x < 1) {
+		x = 1;
+	}
+
+	if (y < 1) {
+		y = 1;
+	}
+
+	local_x = x;
+	local_y = y;
 }
