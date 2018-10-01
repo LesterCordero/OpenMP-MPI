@@ -2,10 +2,20 @@
 #include"Simulation.h"
 
 Person::Person(int id, int roomsize) {
+	infected_ticks = 1;
 	state_current = 0;
 	debug_id = id;
 	local_x = rand() % roomsize;
 	local_y = rand() % roomsize;
+}
+
+bool Person::infectedForTooLong(int death_counter_max){
+	if (infected_ticks > death_counter_max) {
+		return true;
+	}else {
+		infected_ticks++;
+		return false;
+	}
 }
 
 int Person::getX() {

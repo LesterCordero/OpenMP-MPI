@@ -3,8 +3,7 @@
 
 // Variables de debugging
 //#define debug_locale 1
-#define debug_infect 1
-//#define debug_notify_infect
+//#define debug_infect 1
 
 // Constantes de estados
 #define healthy 0
@@ -12,8 +11,8 @@
 #define recovered 2
 #define death 3
 
-void Simulation::start(int p1, int p2, int p3, float p4, float p5, float p6, float p7) {
-	
+void Simulation::start(int p1, int p2, int p3, float p4, float p5, float p6, int p7) {
+
 	// Carge los parámetros a la simulación 
 
 	simulation_core_num = p1;
@@ -22,8 +21,8 @@ void Simulation::start(int p1, int p2, int p3, float p4, float p5, float p6, flo
 	chance_infect_init = p4;
 	chance_infect_pertick = p5;
 	chance_recover_pertick = p6;
-	chance_death_pertick = p7;
-	
+	death_counter_max = p7;
+
 	// Prepare los stats por defecto de la simulacion
 
 	stats_healthy = simulation_number_people * (1 - chance_infect_init);
@@ -45,9 +44,9 @@ void Simulation::start(int p1, int p2, int p3, float p4, float p5, float p6, flo
 	cout << "Dimension del espacio: " << simulation_room_size << "x" << simulation_room_size << endl;
 	cout << "Porcentaje de infeccion inicial: " << chance_infect_init * 100 << "%" << endl << endl;
 
-	cout << "Probabilidad de infeccion: " << chance_infect_pertick *100 << "%" << endl;
+	cout << "Probabilidad de infeccion: " << chance_infect_pertick * 100 << "%" << endl;
 	cout << "Probabilidad de recuperacion: " << chance_recover_pertick * 100 << "%" << endl;
-	cout << "Probabilidad de muerte: " << chance_death_pertick * 100 << "%" << endl << endl;
+	cout << "Semanas enfermo para morir: " << death_counter_max  << " semanas" << endl << endl;
 
 	// Cree la habitación y las personas
 
@@ -66,8 +65,8 @@ void Simulation::makeRoom() {
 		roomstate_recovered[i] = new int[simulation_room_size];
 	}
 
-	for (size_t i = 0; i < simulation_room_size; ++i){
-		for (size_t j = 0; j < simulation_room_size; ++j){
+	for (size_t i = 0; i < simulation_room_size; ++i) {
+		for (size_t j = 0; j < simulation_room_size; ++j) {
 			roomstate_infected[i][j] = 0;
 			roomstate_recovered[i][j] = 0;
 		}
@@ -87,7 +86,7 @@ void Simulation::cleanMemory() {
 }
 
 void Simulation::makePeople() {
-	
+
 	int j = stats_infected;
 	for (int i = 0; i < simulation_number_people; ++i) {
 		Person persona_actual(i, simulation_room_size);
@@ -103,27 +102,54 @@ void Simulation::makePeople() {
 
 }
 
+string Simulation::truncateAndFormat(double val, int cut) {
+	string normal = to_string(val);
+	if (normal.size() > 3) {
+		return normal.substr(0, normal.size() - cut);
+	}
+	return normal;
+
+	
+}
+
 void Simulation::run(int simulation_tick_limit_param) {
 	simulation_tick_limit = simulation_tick_limit_param;
 	int estado_num = 0;
 
 	pushMsgQueueln("Ejecutando " + to_string(simulation_tick_limit_param) + " veces.");
 
+	double percent_healthy = 0;
+	double percent_infected = 0;
+	double percent_recovered = 0;
+	double percent_death = 0;
+
+	prom_healthy = 0;
+
 	while (simulation_tick_limit > 0) {
 		simulation_tick_limit--;
 		estado_num++;
 
-		pushMsgQueueln(
-		"Estado(" + to_string(estado_num) +
-		") Sanas:" + to_string(stats_healthy) +
-		", Enfermas:" + to_string(stats_infected) +
-		", Recuperadas:" + to_string(stats_recovered) +
-		", Muertas: " + to_string(stats_death));
+		prom_healthy += stats_healthy;
+		prom_infected += stats_infected;
+		prom_recovered += stats_recovered;
+		prom_death += stats_death;
 
-		#ifdef debug_locale
-			pushMsgQueueln(" ");
-			pushMsgQueueln("       DEBUG: Localizacion de las personas:");
-		#endif
+		percent_healthy = ((float)stats_healthy / simulation_number_people * 100);
+		percent_infected = ((float)stats_infected / simulation_number_people * 100);
+		percent_recovered = ((float)stats_recovered / simulation_number_people * 100);
+		percent_death = ((float)stats_death / simulation_number_people * 100);
+
+		pushMsgQueueln(
+			"Estado(" + to_string(estado_num) +
+			") Sanas:" + to_string(stats_healthy) + "(" + truncateAndFormat(percent_healthy, 4) + "%)" + "(Prom:" + to_string(prom_healthy/estado_num) + ")" +
+			", Enfermas:" + to_string(stats_infected) + "(" + truncateAndFormat(percent_infected, 4) + "%)" + "(Prom:" + to_string(prom_infected / estado_num) + ")" +
+			", Recuperadas:" + to_string(stats_recovered) + "(" + truncateAndFormat(percent_recovered, 4) + "%)" + "(Prom:" + to_string(prom_recovered / estado_num) + ")" +
+			", Muertas: " + to_string(stats_death) + "(" + truncateAndFormat(percent_death, 4) + "%)" + "(Prom:" + to_string(prom_death / estado_num) + ")");
+
+#ifdef debug_locale
+		pushMsgQueueln(" ");
+		pushMsgQueueln("       DEBUG: Localizacion de las personas:");
+#endif
 
 		for (int i = 0; i < simulation_number_people; ++i) {
 
@@ -131,14 +157,11 @@ void Simulation::run(int simulation_tick_limit_param) {
 			pointer = &people.at(i);
 
 			if (pointer->getState() != death) {
-			
+
 				if (pointer->getState() == healthy) {
+
 					for (int i = 0; i < roomstate_infected[pointer->getX()][pointer->getY()]; i++) {
 						if (rand() % 101 < chance_infect_pertick * 100) {
-							#ifdef debug_notify_infect
-								pushMsgQueueln("       DEBUG: Se infectara una persona en el siguiente estado.");
-							#endif
-
 							pointer->setState(infected);
 							roomstate_infected[pointer->getX()][pointer->getY()]++;
 							stats_infected++;
@@ -147,9 +170,21 @@ void Simulation::run(int simulation_tick_limit_param) {
 						}
 					}
 
-				}
+				}else if (pointer->getState() == infected) {
+					if (pointer->infectedForTooLong(death_counter_max-2)) {
+						pointer->setState(death);
+						roomstate_infected[pointer->getX()][pointer->getY()]--;
+						stats_infected--;
+						stats_death++;
+					}else if (rand() % 101 < chance_recover_pertick * 100) {
+						pointer->setState(recovered);
+						roomstate_infected[pointer->getX()][pointer->getY()]--;
+						roomstate_recovered[pointer->getX()][pointer->getY()]++;
+						stats_infected--;
+						stats_recovered++;
+					}
 
-				//update_percent()
+				}
 
 				int xdisplace = 1;
 				int ydisplace = 1;
@@ -172,25 +207,25 @@ void Simulation::run(int simulation_tick_limit_param) {
 					roomstate_infected[pointer->getX()][pointer->getY()]++;
 				}
 
-				#ifdef debug_locale
-					pushMsgQueueln("       Persona #"+to_string(pointer->getDebugID()+1)+" (x:" + to_string(pointer->getX()) + ", y:" + to_string(pointer->getY()) + ")");
-				#endif
+#ifdef debug_locale
+				pushMsgQueueln("       Persona #" + to_string(pointer->getDebugID() + 1) + " (x:" + to_string(pointer->getX()) + ", y:" + to_string(pointer->getY()) + ")");
+#endif
 
 			}
 
 		}
 
-		#ifdef debug_infect
+#ifdef debug_infect
 		pushMsgQueueln(" ");
 		pushMsgQueueln("       DEBUG: Numero de infectados por celda:");
 		for (int xx = 0; xx < simulation_room_size; xx++) {
 			pushMsgQueue("       ");
 			for (int yy = 0; yy < simulation_room_size; yy++) {
-				pushMsgQueue(to_string(roomstate_infected[xx][yy]));
+				pushMsgQueue(" " + to_string(roomstate_infected[xx][yy]));
 			}
 			pushMsgQueueln("");
 		}
-		#endif
+#endif
 
 	}
 }
@@ -210,12 +245,12 @@ void Simulation::popMsgQueue(bool writeToFile, int howmuch) {
 	for (int i = 0; i < howmuch; i++) {
 		string msg = coutQueue.front();
 #ifdef debug_infect
-		if (msg == "0") {
-			msg = "-";
+		if (msg == " 0") {
+			msg = " -";
 		}
 #endif
 		cout << msg;
 		coutQueue.pop_front();
 	}
-	
+
 }

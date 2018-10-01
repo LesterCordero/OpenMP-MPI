@@ -13,6 +13,7 @@ public:
 	int getDebugID();
 	void setState(int);
 	void setLocation(int, int, int);
+	bool infectedForTooLong(int);
 	Person(int, int);
 
 private:
@@ -20,4 +21,5 @@ private:
 	int state_current;
 	int local_x;
 	int local_y;
+	int infected_ticks;
 };

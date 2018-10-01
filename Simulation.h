@@ -8,7 +8,7 @@ using namespace std;
 
 class Simulation {
 public:
-	void start(int, int, int, float, float, float, float);
+	void start(int, int, int, float, float, float, int);
 	void run(int);
 	void pushMsgQueueln(string);
 	void pushMsgQueue(string);
@@ -19,7 +19,7 @@ private:
 	float chance_infect_init;
 	float chance_infect_pertick;
 	float chance_recover_pertick;
-	float chance_death_pertick;
+	int death_counter_max;
 
 	int stats_healthy;
 	int stats_infected;
@@ -44,4 +44,5 @@ private:
 
 	void makePeople(); 
 	void makeRoom();
+	string truncateAndFormat(double, int);
 };
