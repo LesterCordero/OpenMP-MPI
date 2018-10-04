@@ -29,12 +29,35 @@ int main() {
 	Simulation sim;
 
 	//simulation_core_num, simulation_room_size, simulation_number_people; chance_infect_init; chance_infect_pertick; chance_recover_pertick; death_counter_max;
-	sim.start(omp_get_num_procs(), 100, 5000, 0.10f, 0.075f, .01f, 50);
-	//sim.start(omp_get_num_procs(), 350, 150, 0.075f, 0.65f, .75f, 20);
+	//sim.start(omp_get_num_procs(), 100, 500000, 0.10f, 0.075f, .01f, 50);
+
+	float personas = 0, tam = 0, propInfectInicial = 0, propInfect = 0, propRecover = 0, duracionEnfermedad = 0;
+	
+	cout << "Numero de personas en la civilizacion:" << endl;
+	cin >> personas;
+
+	cout << "Largo/Ancho del espacio vectorial:" << endl;
+	cin >> tam;
+
+	cout << "Porcentaje de infeccion inicial (numero ENTERO de 0 a 10):" << endl;
+	cin >> propInfectInicial;
+
+	cout << "Probabilidad de infeccion por estado (numero ENTERO entre 0 a 100):" << endl;
+	cin >> propInfect;
+
+	cout << "Probabilidad de recuperacion al terminar la enfermedad (numero ENTERO entre 0 a 100):" << endl;
+	cin >> propRecover;
+
+	cout << "Duracion de la enfermedad (numero ENTERO de estados enfermos):" << endl;
+	cin >> duracionEnfermedad;
+
+	sim.start(omp_get_num_procs(), tam, personas, propInfectInicial, propInfect, propRecover, duracionEnfermedad);
+
+	cout << sim.getRandom() << endl;
 
 	// Tome el tiempo y ejecute la simulación
 	tiempo_inicio();
-	sim.run(250);
+	sim.run(200);
 	tiempo_final();
 
 	// Limpie la memoria e imprima al archivo
@@ -43,5 +66,5 @@ int main() {
 	cout << "Tardo " << tiempo << " segundos aproximadamente." << endl;
 
 	// Fin del programa
-	cin.ignore();
+	cin >> personas;
 }

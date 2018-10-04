@@ -8,12 +8,14 @@ using namespace std;
 
 class Simulation {
 public:
-	void start(int, int, int, float, float, float, int);
+	void start(int, int, int, int, int, int, int);
 	void run(int);
 	void pushMsgQueueln(string);
 	void pushMsgQueue(string);
 	void popMsgQueue(bool, int);
 	void cleanMemory();
+	int getRandom();
+
 private:
 
 	float chance_infect_init;
