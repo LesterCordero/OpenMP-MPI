@@ -29,10 +29,12 @@ int main() {
 	Simulation sim;
 
 	//simulation_core_num, simulation_room_size, simulation_number_people; chance_infect_init; chance_infect_pertick; chance_recover_pertick; death_counter_max;
-	//sim.start(omp_get_num_procs(), 100, 500000, 0.10f, 0.075f, .01f, 50);
 
-	float personas = 0, tam = 0, propInfectInicial = 0, propInfect = 0, propRecover = 0, duracionEnfermedad = 0;
-	
+	int hilos = 0 , personas = 0, tam = 0, propInfectInicial = 0, propInfect = 0, propRecover = 0, duracionEnfermedad = 0;
+
+	cout << "Cantidad de hilos a utilizar (Escriba 0 para utilizar TODOS los disponibles)" << endl;
+	cin >> hilos;
+
 	cout << "Numero de personas en la civilizacion:" << endl;
 	cin >> personas;
 
@@ -50,20 +52,23 @@ int main() {
 
 	cout << "Duracion de la enfermedad (numero ENTERO de estados enfermos):" << endl;
 	cin >> duracionEnfermedad;
+	if (hilos == 0) {
+		hilos = omp_get_max_threads();
+	}
+	sim.start(hilos, tam, personas, propInfectInicial, propInfect, propRecover, duracionEnfermedad);
 
-	sim.start(omp_get_num_procs(), tam, personas, propInfectInicial, propInfect, propRecover, duracionEnfermedad);
-
-	cout << sim.getRandom() << endl;
+	//cout << sim.getRandom() << endl;
 
 	// Tome el tiempo y ejecute la simulación
 	tiempo_inicio();
 	sim.run(200);
 	tiempo_final();
 
+	sim.pushMsgQueueln("Tardo " + tiempo + " segundos aproximadamente.");
+
 	// Limpie la memoria e imprima al archivo
 	sim.cleanMemory();
-	sim.popMsgQueue(true, -1);
-	cout << "Tardo " << tiempo << " segundos aproximadamente." << endl;
+	sim.popMsgQueue(-1);
 
 	// Fin del programa
 	cin >> personas;

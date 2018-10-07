@@ -1,8 +1,12 @@
 #pragma once
 #include<iostream>
+#include<iomanip>
 #include<vector>
+#include<fstream>
 #include<queue>
 #include<string>
+#include<omp.h>
+#include<ctime>
 #include"Person.h"
 using namespace std;
 
@@ -12,9 +16,8 @@ public:
 	void run(int);
 	void pushMsgQueueln(string);
 	void pushMsgQueue(string);
-	void popMsgQueue(bool, int);
+	void popMsgQueue(int);
 	void cleanMemory();
-	int getRandom();
 
 private:
 
@@ -35,7 +38,6 @@ private:
 
 	int simulation_number_people;
 	int simulation_room_size;
-	int simulation_tick_limit;
 	int simulation_core_num;
 
 	int** roomstate_infected;
