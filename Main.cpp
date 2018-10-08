@@ -3,12 +3,30 @@
 #include"Person.h"
 #include"Simulation.h"
 #include<omp.h>
+
+/*#include <GL\glew.h>
+#include <GL\freeglut.h>*/
+
+
 using namespace std;
 using namespace std::chrono;
 
 steady_clock::time_point inicio;
 steady_clock::time_point fin;
 string tiempo;
+/*
+void displayMe(void) {
+	glClear(GL_COLOR_BUFFER_BIT);
+	glBegin(GL_POLYGON);
+	glVertex2f(0.0, 0.0);                    // bottom left
+	glVertex2f(0.5, 0.0);                    // bottom right
+	glVertex2f(0.5, 0.5);                    // top right
+	glVertex2f(0.0, 0.5);                    // top left
+	glEnd();
+	glFlush();
+}
+*/
+
 
 void tiempo_inicio() {
 	inicio = steady_clock::now();
@@ -20,7 +38,16 @@ void tiempo_final() {
 	tiempo = to_string(duracion.count());
 }
 
-int main() {
+int main(int argc, char** argv) {
+
+	/*glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE);
+	glutInitWindowSize(300, 300);                    // window size
+	glutInitWindowPosition(500, 500);                // distance from the top-left screen
+	glutCreateWindow("BadproG - Hello world :D");    // message displayed on top bar window
+	glutDisplayFunc(displayMe);
+	glutMainLoop();
+	*/
 
 	// Genera una semilla para los números random
 	srand(time(NULL));

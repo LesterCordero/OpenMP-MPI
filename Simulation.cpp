@@ -44,7 +44,7 @@ void Simulation::start(int p1, int p2, int p3, int p4, int p5, int p6, int p7) {
 	pushMsgQueueln("");
 	pushMsgQueueln("-- Civilizacion inicializada --");
 	pushMsgQueueln("");
-	pushMsgQueueln("Numero de nucleos utilizados:" + truncateAndFormat(simulation_core_num,7));
+	pushMsgQueueln("Numero de hilos utilizados:" + truncateAndFormat(simulation_core_num,7));
 	pushMsgQueueln("Numero de personas en la simulacion: " + truncateAndFormat(simulation_number_people,7));
 	pushMsgQueueln("Dimension del espacio:" + truncateAndFormat(simulation_room_size,7) + "x" + truncateAndFormat(simulation_room_size,7));
 
@@ -162,11 +162,10 @@ void Simulation::run(int simulation_tick_limit_param) {
 						if (rand() % 101 < chance_infect_pertick) {
 							pointer->setState(infected);
 							roomstate_infected[pointer->getX()][pointer->getY()]++;
-							#pragma omp critical
-							{
+							#pragma omp atomic
 								stats_infected++;
+							#pragma omp atomic
 								stats_healthy--;
-							}
 							break;
 						}
 					}
@@ -178,20 +177,18 @@ void Simulation::run(int simulation_tick_limit_param) {
 							pointer->setState(recovered);
 							roomstate_infected[pointer->getX()][pointer->getY()]--;
 							roomstate_recovered[pointer->getX()][pointer->getY()]++;
-							#pragma omp critical
-							{
+							#pragma omp atomic
 								stats_infected--;
+							#pragma omp atomic
 								stats_recovered++;
-							}
 						}
 						else {
 							pointer->setState(death);
 							roomstate_infected[pointer->getX()][pointer->getY()]--;
-							#pragma omp critical
-							{
+							#pragma omp atomic
 								stats_infected--;
+							#pragma omp atomic
 								stats_death++;
-							}
 						}
 					}
 
