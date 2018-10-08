@@ -4,50 +4,50 @@
 #include"Simulation.h"
 #include<omp.h>
 
-/*#include <GL\glew.h>
-#include <GL\freeglut.h>*/
+#include <GL\glew.h>
+#include <GL\freeglut.h>
 
 
 using namespace std;
 using namespace std::chrono;
 
-steady_clock::time_point inicio;
-steady_clock::time_point fin;
+steady_clock::time_point startt;
+steady_clock::time_point endt;
 string tiempo;
-/*
+
 void displayMe(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glBegin(GL_POLYGON);
-	glVertex2f(0.0, 0.0);                    // bottom left
-	glVertex2f(0.5, 0.0);                    // bottom right
-	glVertex2f(0.5, 0.5);                    // top right
-	glVertex2f(0.0, 0.5);                    // top left
+	glVertex2f(0.0, 0.0);                    
+	glVertex2f(0.5, 0.0);                    
+	glVertex2f(0.5, 0.5);                    
+	glVertex2f(0.0, 0.5);                   
 	glEnd();
 	glFlush();
 }
-*/
 
 
-void tiempo_inicio() {
-	inicio = steady_clock::now();
+
+void start_time() {
+	startt = steady_clock::now();
 }
 
-void tiempo_final() {
-	fin = steady_clock::now();
-	duration<double> duracion = duration_cast<duration<double>>(fin - inicio);
+void end_time() {
+	endt = steady_clock::now();
+	duration<double> duracion = duration_cast<duration<double>>(endt - startt);
 	tiempo = to_string(duracion.count());
 }
 
 int main(int argc, char** argv) {
 
-	/*glutInit(&argc, argv);
+	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE);
-	glutInitWindowSize(300, 300);                    // window size
-	glutInitWindowPosition(500, 500);                // distance from the top-left screen
+	glutInitWindowSize(1000, 1000);                    // window size
+	glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH)-1000)/2, (glutGet(GLUT_SCREEN_HEIGHT) - 1000) / 2);                // distance from the top-left screen
 	glutCreateWindow("BadproG - Hello world :D");    // message displayed on top bar window
 	glutDisplayFunc(displayMe);
 	glutMainLoop();
-	*/
+	
 
 	// Genera una semilla para los números random
 	srand(time(NULL));
@@ -87,9 +87,9 @@ int main(int argc, char** argv) {
 	//cout << sim.getRandom() << endl;
 
 	// Tome el tiempo y ejecute la simulación
-	tiempo_inicio();
+	start_time();
 	sim.run(200);
-	tiempo_final();
+	end_time();
 
 	sim.pushMsgQueueln("Tardo " + tiempo + " segundos aproximadamente.");
 
